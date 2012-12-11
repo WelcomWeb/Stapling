@@ -1,0 +1,16 @@
+{
+	"ContactCards": [
+		{
+			"Name": "Bob",
+			"E-mail": "bob@emailprovider.com"
+		},
+		{
+			"Name": "Alice",
+			"E-mail": "alice@emailprovider.com"
+		},
+		{
+			"Name": "Eve",
+			"E-mail": "eve@emailprovider.com"
+		}
+	]
+}

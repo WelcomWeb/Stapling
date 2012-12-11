@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Examples using Stapling</title>
+
+		<script>
+
+			var datasource = {
+				"Dwarfs": [
+					{
+						"Name": "Balin",
+						"Father": "Fundin"
+					},
+					{
+						"Name": "Gimli",
+						"Father": "Glóin"
+					},
+					{
+						"Name": "Thrór",
+						"Father": "Dáin"
+					}
+				]
+			};
+
+			var onXsltJsonHandleClick = function () {
+
+				/**
+				* Parse a JSON data source from a service or an external file
+				* with a XSLT template
+				*/
+				Stapling.load('datasource.json', 'template.xslt', function (xml) {
+
+					if (console && console.log) {
+						console.log("XML-document: ", xml);
+					}
+
+					document.getElementById('result-container').appendChild(this);
+
+				});
+
+			};
+
+			var onJsonOnlyHandleClick = function () {
+
+				/**
+				* Parse an existing JSON data structure with a
+				* XSLT template
+				*/
+				Stapling.parse(datasource, 'template.xslt', function (xml) {
+
+					if (console && console.log) {
+						console.log("XML-document: ", xml);
+					}
+
+					document.getElementById('result-container').appendChild(this);
+
+				});
+
+			};
+
+			window.onload = function () {
+
+				Stapling.cacheable = true;
+
+				document.getElementById('xslt-json-handle').onclick = onXsltJsonHandleClick;
+				document.getElementById('json-only-handle').onclick = onJsonOnlyHandleClick;
+
+			};
+
+		</script>
+
+		<style>
+			#handles {
+				width: 700px;
+				padding: 10px;
+				border: 1px solid darkred;
+				margin: 0 auto;
+			}
+			#result-container {
+				width: 700px;
+				padding: 10px;
+				border: 1px solid lightgreen;
+				margin: 0 auto;
+			}
+		</style>
+
+	</head>
+	<body>
+
+		<div id="handles">
+			<input type="button" id="xslt-json-handle" value="Load both XSLT and JSON via Ajax" />
+			<input type="button" id="json-only-handle" value="Parse JSON with a XSLT template" />
+		</div>
+
+		<div id="result-container"></div>
+
+		<script src="../stapling-1.0.js"></script>
+
+	</body>
+</html>

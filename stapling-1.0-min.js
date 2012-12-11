@@ -1,0 +1,17 @@
+/**
+* Stapling 1.0
+*
+* JSON XSLT Parser, use XSLT to transform JSON (former known as JXS)
+*
+* @author Björn Wikström <bjorn@welcom.se>
+* @license LGPL v3 <http://www.gnu.org/licenses/lgpl.html>
+* @version 1.0
+* @copyright Welcom Web i Göteborg AB 2012
+*/
+(function(h,j,k){if(typeof h.Stapling===typeof k){Array.prototype.indexOf||(Array.prototype.indexOf=function(a,b){for(var c=b||0;c<this.length;c++)if(this[c]===a)return c;return-1});var i=typeof h.DOMParser===typeof k||typeof h.XSLTProcessor===typeof k,l=function(a,b){var c;c=i?new ActiveXObject("Msxml2.XMLHTTP"):new XMLHttpRequest;c.onreadystatechange=function(){if(4==c.readyState&&200==c.status)b(c.responseText);else if(4==c.readyState)throw{type:"ServerException",message:"The resource could not be fetched from '"+
+a+"'"};};var d=0<=a.indexOf("?")?"&":"?",d=a+d+"cache="+(new Date).getMilliseconds()+(new Date).getSeconds();c.open("GET",d,!0);c.send("")},q=function(a){if(i){var b=new ActiveXObject("Msxml2.DOMDocument");b.loadXML(a);return b}return(new DOMParser).parseFromString(a,"text/xml")},r=function(a){if(i){var b=new ActiveXObject("Msxml2.FreeThreadedDOMDocument");b.loadXML(a);return b}return(new DOMParser).parseFromString(a,"text/xml")},g=function(a){return a.replace(/[^a-z0-9\-_]/ig,"")},s=function(a,b){for(var c=
+[],d=0;d<b.length;d++)if("[object Object]"===Object.prototype.toString.call(b[d])){var e=m(b[d]);c.push("<item>");for(var f=0;f<e.length;f++)c.push(e[f]);c.push("</item>")}else if("[object Array]"===Object.prototype.toString.call(b[d])){e=s("item",b[d]);for(f=0;f<e.length;f++)c.push(e[f])}else c.push("<"+g(a)+">"+b[d]+"</"+g(a)+">");return c},m=function(a){var b=[],c;for(c in a)if("[object Object]"===Object.prototype.toString.call(a[c])){for(var d=m(a[c]),e="<"+g(c)+">",f=0;f<d.length;f++)e+=d[f];
+e+="</"+g(c)+">";b.push(e)}else if("[object Array]"===Object.prototype.toString.call(a[c])){d=s(c,a[c]);e="<"+g(c)+">";for(f=0;f<d.length;f++)e+=d[f];e+="</"+g(c)+">";b.push(e)}else b.push("<"+g(c)+">"+a[c]+"</"+g(c)+">");return b},t=function(a,b,c){var d=!1;if(i){d=new ActiveXObject("Msxml2.XSLTemplate");d.stylesheet=b;d=d.createProcessor();d.input=a;d.transform();var b=j.createDocumentFragment(),e=j.createElement("div");b.appendChild(e);e.outerHTML=d.output;d=b}else d=new XSLTProcessor,d.importStylesheet(b),
+d=d.transformToFragment(a,j);c.call(d,a)},n=function(a,b){try{localStorage.setItem(a,b)}catch(c){}},p=function(a){var b=!1;try{if(null!==(b=localStorage.getItem(a))&&"string"===typeof b)return b}catch(c){}return b};h.Stapling={cachable:!0,isSupported:function(){return h.localStorage&&h.JSON},prefetch:function(a){"string"===typeof a&&(a=[a]);for(var b=0;b<a.length;b++)(function(a){l(a,function(b){n(a,b)})})(a[b])},isCached:function(a){return!1!==p(a)},parse:function(a,b,c){for(var d,a="[object Object]"===
+Object.prototype.toString.call(a)?a:{"list-items":a},a=m(a),e="",f=0;f<a.length;f++)e+=a[f];d='<?xml version="1.0" encoding="UTF-8" ?><json>'+e+"</json>";e=!1;if(this.cachable&&!1!==(e=p(b))&&null!=e)a=q(d),e=r(e),t(a,e,c);else{var g=this;l(b,function(a){g.cachable&&n(b,a);var e=q(d),a=r(a);t(e,a,c)})}},load:function(a,b,c){var d=!1,e=this;this.cachable&&!1!==(d=p(a))&&null!=d?e.parse(JSON.parse(d),b,c):(e=this,l(a,function(d){e.cachable&&n(a,d);e.parse(JSON.parse(d),b,c)}))},clear:function(a){try{if("[object Array]"===
+Object.prototype.toString.call(a))for(var b=0;b<a.length;b++)localStorage.removeItem(a[b]);else localStorage.removeItem(a)}catch(c){}}}}})(window,document);
