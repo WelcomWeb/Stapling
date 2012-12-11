@@ -1,7 +1,7 @@
 /**
-* Stapling 1.0
+* Stapling 1.0 (former known as JXS)
 *
-* JSON XSLT Parser, use XSLT to transform JSON (former known as JXS)
+* JSON XSLT Parser, use XSLT to transform JSON
 *
 * @author Björn Wikström <bjorn@welcom.se>
 * @license LGPL v3 <http://www.gnu.org/licenses/lgpl.html>
