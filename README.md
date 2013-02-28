@@ -15,6 +15,6 @@ The library is tested in:
 IE 7 is supported if JSON (https://github.com/douglascrockford/JSON-js) is available, as well as a localStorage fallback (https://github.com/marcuswestin/store.js).
 
 ## Examples
-<a href="tree/master/examples">See the example files</a>
+<a href="https://github.com/WelcomWeb/Stapling/tree/master/examples">See the example files</a>
 
 Happy coding!
