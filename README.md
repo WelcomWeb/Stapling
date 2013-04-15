@@ -18,3 +18,5 @@ IE 7 is supported if JSON (https://github.com/douglascrockford/JSON-js) is avail
 <a href="https://github.com/WelcomWeb/Stapling/tree/master/examples">See the example files</a>
 
 Happy coding!
+
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/c633762f7f514b1b53ecc1661a031a88 "githalytics.com")](http://githalytics.com/WelcomWeb/Stapling)
