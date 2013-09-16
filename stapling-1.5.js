@@ -53,7 +53,7 @@
         * so we need to check if we can use modern functionality or if
         * we have to fall back to ActiveX-components
         */
-        var activeXParsing = !(window.DOMParser || window.XSLTProcessor),
+        var activeXParsing = !(window.DOMParser && window.XSLTProcessor),
             activeXRequest = !window.XMLHttpRequest;
         
         /**
