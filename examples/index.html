@@ -63,6 +63,26 @@
 
 				Stapling.cachable = true;
 
+				Stapling.on('request', function (url) {
+					var log = document.createElement('p');
+					log.innerHTML = "A request was made to " + url;
+					document.getElementById('log-container').appendChild(log);
+				});
+
+				Stapling.on('parse', function (json, template) {
+					var log = document.createElement('p');
+					log.innerHTML = "Parsing JSON with `" + template + "`";
+					document.getElementById('log-container').appendChild(log);
+				});
+
+				/* The event callbacks can be stacked, so multiple callbacks
+				   can be called for one event */
+				Stapling.on('parse', function (json, template) {
+					var log = document.createElement('p');
+					log.innerHTML = "As I've already told you, we're parsing JSON with `" + template + "`";
+					document.getElementById('log-container').appendChild(log);
+				});
+
 				document.getElementById('xslt-json-handle').onclick = onXsltJsonHandleClick;
 				document.getElementById('json-only-handle').onclick = onJsonOnlyHandleClick;
 
@@ -94,6 +114,8 @@
 		</div>
 
 		<div id="result-container"></div>
+
+		<div id="log-container"></div>
 
 		<script src="../stapling-1.0.js"></script>
 
