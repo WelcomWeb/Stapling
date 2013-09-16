@@ -67,12 +67,16 @@
 					var log = document.createElement('p');
 					log.innerHTML = "A request was made to " + url;
 					document.getElementById('log-container').appendChild(log);
+
+					return true; // Can return false to stop the request
 				});
 
 				Stapling.on('parse', function (json, template) {
 					var log = document.createElement('p');
 					log.innerHTML = "Parsing JSON with `" + template + "`";
 					document.getElementById('log-container').appendChild(log);
+
+					return true; // Can return false to stop the parsing
 				});
 
 				/* The event callbacks can be stacked, so multiple callbacks
@@ -81,6 +85,8 @@
 					var log = document.createElement('p');
 					log.innerHTML = "As I've already told you, we're parsing JSON with `" + template + "`";
 					document.getElementById('log-container').appendChild(log);
+
+					return true;
 				});
 
 				document.getElementById('xslt-json-handle').onclick = onXsltJsonHandleClick;
@@ -117,7 +123,7 @@
 
 		<div id="log-container"></div>
 
-		<script src="../stapling-1.0.js"></script>
+		<script src="../stapling-1.5.js"></script>
 
 	</body>
 </html>
