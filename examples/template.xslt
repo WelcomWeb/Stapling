@@ -3,7 +3,7 @@
 
 	<xsl:template match="json/Dwarfs">
 
-		<h2>List of some Middle-Earth dwarfes</h2>
+		<h2>List of some Middle-Earth dwarfs</h2>
 		<ul>
 			<xsl:for-each select="item">
 
