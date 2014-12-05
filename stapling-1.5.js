@@ -62,8 +62,8 @@
         * The event callback queue
         */
         var _events = {
-            'parse': [],
-            'request': []
+            parse: [],
+            request: []
         };
 
         /**
@@ -105,8 +105,8 @@
                 } else if (request.readyState === 4) {
                 
                     throw {
-                        "type": "ServerException",
-                        "message": "The resource could not be fetched from '" + url + "'"
+                        type: "ServerException",
+                        message: "The resource could not be fetched from '" + url + "'"
                     };
                 
                 }
@@ -165,7 +165,7 @@
         * @returns {String}
         */
         var _fullXmlString = function (xmlPart) {
-            return '<' + '?xml version="1.0" encoding="UTF-8" ?' + '><json>' + xmlPart + '</json>';
+            return '<' + '?xml version="1.0" ?' + '><json>' + xmlPart + '</json>';
         };
         
         /**
