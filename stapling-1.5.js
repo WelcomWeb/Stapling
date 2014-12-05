@@ -1,3 +1,5 @@
+/*jslint vars:true */
+/*global ActiveXObject, DOMParser, XSLTProcessor*/
 /**
 * Stapling 1.5
 *
@@ -8,7 +10,7 @@
 * @version 1.5
 * @copyright Welcom Web i Göteborg AB 2012
 */
-;(function (window, document, undef) {
+;(function (window, document) {'use strict';
     
     /**
     * If Stapling is already loaded, don't load it again
@@ -22,8 +24,8 @@
     * nativly, so we manually have to implement it
     */
     Array.prototype.indexOf = Array.prototype.indexOf || function (obj, start) {
-    
-        for (var i = (start || 0); i < this.length; i++) {
+        var i;
+        for (i = (start || 0); i < this.length; i++) {
             if (this[i] === obj) {
                 return i;
             }
@@ -39,14 +41,14 @@
     * these broswsers as well
     */
     Array.prototype.forEach = Array.prototype.forEach || function (callback, thisArg) {
-
-        for (var i = 0; i < this.length; i++) {
+        var i;
+        for (i = 0; i < this.length; i++) {
             callback.call(thisArg, this[i]);
         }
 
     };
     
-    var Stapling = function () {
+    var Stapling = (function () {
         
         /**
         * Older IE versions handle XML and XSLT throught ActiveX-components,
@@ -60,8 +62,8 @@
         * The event callback queue
         */
         var _events = {
-            'parse': [],
-            'request': []
+            parse: [],
+            request: []
         };
 
         /**
@@ -77,10 +79,10 @@
 
             /* If we have any request events, call them to see
                if we should proceed with the request */
-            if (!!_events['request'] && _events['request'].length > 0) {
+            if (!!_events.request && _events.request.length > 0) {
                 var shouldRequest = true;
-                _events['request'].forEach(function (fn) {
-                    if (!fn.call(this, url)) shouldRequest = false;
+                _events.request.forEach(function (fn) {
+                    if (!fn.call(this, url)) {shouldRequest = false;}
                 }, this);
 
                 if (!shouldRequest) {
@@ -96,15 +98,15 @@
             }
             
             request.onreadystatechange = function() {
-                if (request.readyState == 4 && request.status == 200) {
+                if (request.readyState === 4 && request.status === 200) {
                 
                     callback(request.responseText);
                 
-                } else if (request.readyState == 4) {
+                } else if (request.readyState === 4) {
                 
                     throw {
-                        "type": "ServerException",
-                        "message": "The resource could not be fetched from '" + url + "'"
+                        type: "ServerException",
+                        message: "The resource could not be fetched from '" + url + "'"
                     };
                 
                 }
@@ -163,7 +165,7 @@
         * @returns {String}
         */
         var _fullXmlString = function (xmlPart) {
-            return '<' + '?xml version="1.0" encoding="UTF-8" ?' + '><json>' + xmlPart + '</json>';
+            return '<' + '?xml version="1.0" ?' + '><json>' + xmlPart + '</json>';
         };
         
         /**
@@ -186,17 +188,17 @@
         */
         var _parseList = function (name, elements) {
         
-            var list = [];
+            var i, j, children, list = [];
             
-            for (var i = 0; i < elements.length; i++) {
+            for (i = 0; i < elements.length; i++) {
             
                 /* Is it a regular JavaScript object? */
                 if (Object.prototype.toString.call(elements[i]) === '[object Object]') {
             
-                    var children = _parseObject(elements[i]);
+                    children = _parseObject(elements[i]);
             
                     list.push('<item>');
-                    for (var j = 0; j < children.length; j++) {
+                    for (j = 0; j < children.length; j++) {
                         list.push(children[j]);
                     }
                     list.push('</item>');
@@ -204,9 +206,9 @@
                 } /* Is it an array? */
                 else if (Object.prototype.toString.call(elements[i]) === '[object Array]') {
             
-                    var children = _parseList('item', elements[i]);
+                    children = _parseList('item', elements[i]);
             
-                    for (var j = 0; j < children.length; j++) {
+                    for (j = 0; j < children.length; j++) {
                         list.push(children[j]);
                     }
             
@@ -231,16 +233,16 @@
         */
         var _parseObject = function (obj) {
         
-            var list = [];
-            for (var p in obj) {
+            var p, i, children, xmlString, list = [];
+            for (p in obj) {
             
                 /* Is it a regular JavaScript object? */
                 if (Object.prototype.toString.call(obj[p]) === '[object Object]') {
             
-                    var children = _parseObject(obj[p]);
+                    children = _parseObject(obj[p]);
             
-                    var xmlString = '<' + _sanitize(p) + '>';
-                    for (var i = 0; i < children.length; i++) {
+                    xmlString = '<' + _sanitize(p) + '>';
+                    for (i = 0; i < children.length; i++) {
                         xmlString += children[i];
                     }
                     xmlString += '</' + _sanitize(p) + '>';
@@ -250,10 +252,10 @@
                 } /* Is it an array? */
                 else if (Object.prototype.toString.call(obj[p]) === '[object Array]') {
             
-                    var children = _parseList(p, obj[p]);
+                    children = _parseList(p, obj[p]);
             
-                    var xmlString = '<' + _sanitize(p) + '>';
-                    for (var i = 0; i < children.length; i++) {
+                    xmlString = '<' + _sanitize(p) + '>';
+                    for (i = 0; i < children.length; i++) {
                         xmlString += children[i];
                     }
                     xmlString += '</' + _sanitize(p) + '>';
@@ -283,10 +285,10 @@
         
             json = Object.prototype.toString.call(json) === '[object Object]' ? json : {"list-items": json};
             
-            var children = _parseObject(json),
+            var i, children = _parseObject(json),
             content  = '';
             
-            for (var i = 0; i < children.length; i++) {
+            for (i = 0; i < children.length; i++) {
                 content += children[i];
             }
             
@@ -305,14 +307,14 @@
         */
         var _parse = function (xmlDocument, xslDocument, callback) {
         
-            var result = false;
+            var processor, result = false;
             
             if (activeXParsing) {
             
                 var template = new ActiveXObject("Msxml2.XSLTemplate");
                 template.stylesheet = xslDocument;
                 
-                var processor = template.createProcessor();
+                processor = template.createProcessor();
                 processor.input = xmlDocument;
                 processor.transform();
                 
@@ -326,7 +328,7 @@
             
             } else {
             
-                var processor = new XSLTProcessor();
+                processor = new XSLTProcessor();
                 processor.importStylesheet(xslDocument);
             
                 result = processor.transformToFragment(xmlDocument, document);
@@ -350,7 +352,7 @@
             
                 localStorage.setItem(name, content);
             
-            } catch (e) {}
+            } catch (ignore) {}
         
         };
         
@@ -364,17 +366,10 @@
         */
         var _retrieve = function (name) {
         
-            var cached = false;
-            
             try {
-                if ((cached = localStorage.getItem(name)) !== null && typeof cached === 'string') {
-                
-                    return cached;
-                
-                }
-            } catch (e) {}
-            
-            return cached;
+                return localStorage.getItem(name);
+
+            } catch (e) {return false;}
         
         };
         
@@ -407,12 +402,12 @@
             * @returns {Void}
             */
             prefetch: function (resources) {
-            
+                var i;
                 if (typeof resources === 'string') {
                     resources = [resources];
                 }
             
-                for (var i = 0; i < resources.length; i++) {
+                for (i = 0; i < resources.length; i++) {
             
                     (function (resource) {
                         _request(resource, function (response) {
@@ -420,7 +415,7 @@
                             _store(resource, response);
             
                         });
-                    })(resources[i]);
+                    }(resources[i]));
             
                 }
             
@@ -451,10 +446,10 @@
 
                 /* If we have any parse events, call them to see
                    if we should proceed with the parsing */
-                if (!!_events['parse'] && _events['parse'].length > 0) {
+                if (!!_events.parse && _events.parse.length > 0) {
                     var shouldParse = true;
-                    _events['parse'].forEach(function (fn) {
-                        if (!fn.call(this, json, template)) shouldParse = false;
+                    _events.parse.forEach(function (fn) {
+                        if (!fn.call(this, json, template)) {shouldParse = false;}
                     }, this);
 
                     if (!shouldParse) {
@@ -462,13 +457,14 @@
                     }
                 }
             
-                var xml    = _xmlFromJSON(json),
+                var xmlDocument, xslDocument,
+                    xml    = _xmlFromJSON(json),
                     cached = false;
 
                 if (this.cachable && (cached = _retrieve(template)) !== false && cached != null) {
                 
-                    var xmlDocument = _xmlFromString(xml),
-                        xslDocument = _xslFromString(cached);
+                    xmlDocument = _xmlFromString(xml);
+                    xslDocument = _xslFromString(cached);
                 
                     _parse(xmlDocument, xslDocument, callback);
                 
@@ -481,8 +477,8 @@
                             _store(template, xsl);
                         }
 
-                        var xmlDocument = _xmlFromString(xml),
-                            xslDocument = _xslFromString(xsl);
+                        xmlDocument = _xmlFromString(xml);
+                        xslDocument = _xslFromString(xsl);
                 
                         _parse(xmlDocument, xslDocument, callback);
                 
@@ -511,7 +507,6 @@
                 
                 } else {
                 
-                    var me = this;
                     _request(service, function (json) {
                     
                         if (me.cachable) {
@@ -533,16 +528,16 @@
             * @returns {Void}
             */
             clear: function (name) {
-            
+                var i;
                 try {
                     if (Object.prototype.toString.call(name) === '[object Array]') {
-                        for (var i = 0; i < name.length; i++) {
+                        for (i = 0; i < name.length; i++) {
                             localStorage.removeItem(name[i]);
                         }
                     } else {
                         localStorage.removeItem(name);
                     }
-                } catch (e) {}
+                } catch (ignore) {}
             
             },
 
@@ -561,11 +556,11 @@
         
         };
     
-    }();
+    }());
     
     /**
     * Add Stapling to the global namespace
     */
     window.Stapling = Stapling;
 
-})(window, document);
+}(window, document));
